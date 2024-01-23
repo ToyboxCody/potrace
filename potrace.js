@@ -32,7 +32,7 @@
  *                                    optional parameter opt_type can be "curve"
  */
 
-var Potrace = (function() {
+export const Potrace = (function() {
 
   function Point(x, y) {
     this.x = x;
@@ -162,6 +162,12 @@ var Potrace = (function() {
     var ctx = imgCanvas.getContext('2d');
     bm = new Bitmap(imgCanvas.width, imgCanvas.height);
     var imgdataobj = ctx.getImageData(0, 0, bm.w, bm.h);
+
+    parseBm(imgdataobj);
+  }
+  
+  function parseBm(imgdataobj) {
+    bm = new Bitmap(imgdataobj.width, imgdataobj.height);
     var l = imgdataobj.data.length, i, j, color;
     for (i = 0, j = 0; i < l; i += 4, j++) {
       color = 0.2126 * imgdataobj.data[i] + 0.7153 * imgdataobj.data[i + 1] +
@@ -170,7 +176,7 @@ var Potrace = (function() {
     }
     info.isReady = true;
   }
-  
+
   
   function bmToPathlist() {
   
@@ -1227,6 +1233,14 @@ var Potrace = (function() {
     callback = null;
   }
 
+  function trace(imageData, size = 1, opt_type) {
+    clear();
+    parseBm(imageData);
+    bmToPathlist();
+    processPath();
+    return getSVG(size, opt_type)
+  }
+
   function clear() {
     bm = null;
     pathlist = [];
@@ -1299,6 +1313,9 @@ var Potrace = (function() {
     setParameter: setParameter,
     process: process,
     getSVG: getSVG,
+    trace: trace,
     img: imgElement
   };
 })();
+
+export default Potrace;
