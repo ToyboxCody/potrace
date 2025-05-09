@@ -172,7 +172,7 @@ export const Potrace = (function() {
     for (i = 0, j = 0; i < l; i += 4, j++) {
       color = 0.2126 * imgdataobj.data[i] + 0.7153 * imgdataobj.data[i + 1] +
           0.0721 * imgdataobj.data[i + 2];
-      bm.data[j] = (color < 128 ? 1 : 0);
+      bm.data[j] = imgdataobj.data[i + 3] == 0 ? 0 : (color < 128 ? 1 : 0);
     }
     info.isReady = true;
   }
